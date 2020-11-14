@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Nocla.Views.PMSelectPage"
+             xmlns:vm="clr-namespace:Nocla.ViewModels"
+             Title="PM Selection">
+
+    <ContentPage.BindingContext>
+        <vm:MessagesViewModel />
+    </ContentPage.BindingContext>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Color x:Key="Accent">#96d1ff</Color>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <!-- Base Grid-->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackLayout BackgroundColor="#003595" VerticalOptions="FillAndExpand" HorizontalOptions="Fill">
+            <StackLayout Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center">
+                <ContentView Padding="0,40,0,40" VerticalOptions="FillAndExpand">
+                    <!-- Logo on first grid row-->
+                    <Image Source="nocla_logo.png" VerticalOptions="Center" HeightRequest="64" />
+                </ContentView>
+            </StackLayout>
+        </StackLayout>
+        <!-- Nested Grid #1 on second grid row-->
+        <Grid VerticalOptions="Fill" HorizontalOptions="FillAndExpand" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <!-- First row of sub grid contains user prompt -->
+            <Label  Text="Select your production module" FontSize="Title" Grid.Row="0" Grid.ColumnSpan="3" />
+            
+            <!-- Second row of sub grid contains buttons for PMs 1-3 -->
+            <Button Clicked="goToPMVIEW"    
+            Text="PM1" x:Name="pm1_btn"
+            BackgroundColor="DarkGreen"
+            HorizontalOptions="Center"
+            VerticalOptions="CenterAndExpand" Grid.Row="1" Grid.Column="0" />
+            
+            <Button Clicked="goToPMVIEW"    
+            Text="PM2" x:Name="pm2_btn"
+            BackgroundColor="DarkBlue"
+            HorizontalOptions="Center"
+            VerticalOptions="CenterAndExpand" Grid.Row="1" Grid.Column="1" />
+            
+            <Button Clicked="goToPMVIEW"    
+            Text="PM3" x:Name="pm3_btn"
+            BackgroundColor="#cccc00"
+            HorizontalOptions="Center"
+            VerticalOptions="CenterAndExpand" Grid.Row="1" Grid.Column="2" />
+            
+            <!-- Third Row row of sub grid contains buttons for PMs 4-6 -->
+            <Button Clicked="goToPMVIEW"    
+            Text="PM4" x:Name="pm4_btn"
+            BackgroundColor="Black"
+            HorizontalOptions="Center"
+            VerticalOptions="CenterAndExpand" Grid.Row="2" Grid.Column="0" />
+
+            <Button Clicked="goToPMVIEW"    
+            Text="PM5" x:Name="pm5_btn"
+            BackgroundColor="Tan"
+            HorizontalOptions="Center"
+            VerticalOptions="CenterAndExpand" Grid.Row="2" Grid.Column="1" />
+
+            <Button Clicked="goToPMVIEW"    
+            Text="PM6" x:Name="pm6_btn"
+            BackgroundColor="MediumPurple"
+            HorizontalOptions="Center"
+            VerticalOptions="CenterAndExpand" Grid.Row="2" Grid.Column="2" />
+
+            <!-- Fourth row of sub grid contains buttons for PMs 7-8 -->
+            <Button Clicked="goToPMVIEW"    
+            Text="PM7" x:Name="pm7_btn"
+            BackgroundColor="Goldenrod"
+            HorizontalOptions="Center"
+            VerticalOptions="CenterAndExpand" Grid.Row="3" Grid.Column="0" />
+
+            <Button Clicked="goToPMVIEW" 
+            BackgroundColor="Purple"
+            Text="PM8" x:Name="pm8_btn"
+            HorizontalOptions="Center"
+            VerticalOptions="CenterAndExpand" Grid.Row="3" Grid.Column="1" />
+
+            <Button Clicked="goToPMVIEW"    
+            BackgroundColor="Red"
+            Text="PM9" x:Name="pm9_btn"
+            HorizontalOptions="Center"
+            VerticalOptions="CenterAndExpand" Grid.Row="3" Grid.Column="2" />
+
+            <!-- Fifth row of sub grid contains buttons for PMs 10-12 -->
+            <Button Clicked="goToPMVIEW"    
+            Text="PM10" x:Name="pm10_btn"
+            BackgroundColor="DarkGray"
+            HorizontalOptions="Center"
+            VerticalOptions="CenterAndExpand" Grid.Row="4" Grid.Column="0" />
+
+            <Button Clicked="goToPMVIEW"    
+            Text="PM11" x:Name="pm11_btn"
+            BackgroundColor="DarkTurquoise"
+            HorizontalOptions="Center"
+            VerticalOptions="CenterAndExpand" Grid.Row="4" Grid.Column="1" />
+
+            <Button Clicked="goToPMVIEW"    
+            Text="PM12" x:Name="pm12_btn"
+            BackgroundColor="LimeGreen"
+            HorizontalOptions="Center"
+            VerticalOptions="CenterAndExpand" Grid.Row="4" Grid.Column="2" />
+
+            <!-- Sixth row of sub grid contains buttons for PMs 13-15 -->
+            <Button Clicked="goToPMVIEW"    
+            Text="PM13" x:Name="pm13_btn"
+            BackgroundColor="DarkGoldenrod"
+            HorizontalOptions="Center"
+            VerticalOptions="CenterAndExpand" Grid.Row="5" Grid.Column="0" />
+
+            <Button Clicked="goToPMVIEW"    
+            Text="PM14" x:Name="pm14_btn"
+            BackgroundColor="#008b8b"
+            HorizontalOptions="Center"
+            VerticalOptions="CenterAndExpand" Grid.Row="5" Grid.Column="1" />
+
+            <Button Clicked="goToPMVIEW"    
+            Text="PM15" x:Name="pm15_btn"
+            BackgroundColor="#c1d53e"
+            HorizontalOptions="Center"
+            VerticalOptions="CenterAndExpand" Grid.Row="5" Grid.Column="2" />
+
+        </Grid>
+    </Grid>
+
+</ContentPage>

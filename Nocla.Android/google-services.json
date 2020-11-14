@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "204034525960",
+    "firebase_url": "https://nocla-291120.firebaseio.com",
+    "project_id": "nocla-291120",
+    "storage_bucket": "nocla-291120.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:204034525960:android:13d96d0459eaac7ae7fabd",
+        "android_client_info": {
+          "package_name": "com.companyname.nocla"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "204034525960-55rm5p28jcsj0jh3omjqd435etqu0397.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-iyex0e1PXGkdMPuSz1mLv-NpX7GceeY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "204034525960-55rm5p28jcsj0jh3omjqd435etqu0397.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

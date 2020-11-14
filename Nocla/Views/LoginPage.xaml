@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:Nocla.Models;assembly=Nocla"
+             mc:Ignorable="d"
+             x:Class="Nocla.Views.LoginPage"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#003595">
+    <Grid>
+        <Grid Padding="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="200"/>
+                <RowDefinition Height="200"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <!-- LOGO -->
+            <Image Source="nocla_logo.png" VerticalOptions="Center" Grid.Row="0" />
+
+            <!--Login View -->
+            <StackLayout Orientation="Vertical"  Grid.Row="1">
+                <Label Text="Username" FontSize="20" HorizontalTextAlignment="Center" TextColor="LightGray"/>
+                <Entry x:Name="userEntry" FontSize="15" TextColor="White" HorizontalTextAlignment="Center"/>
+                <Label Text="Password" FontSize="20" HorizontalTextAlignment="Center" TextColor="LightGray"/>
+                <Entry x:Name="passEntry" FontSize="15" IsPassword="True" TextColor="White" HorizontalTextAlignment="Center"/>
+                <Button Text="Submit" Clicked="login"/>
+            </StackLayout>
+
+            <!-- Forgot Text-->
+            <Button x:Name="forgotBtn" Clicked="openForgotPopup" Text="Forgot Username/Password?"  BackgroundColor="#003595" TextColor="#038be9"  HorizontalOptions="CenterAndExpand" Grid.Row="2"/>
+
+            <!-- Spinning Eye Icon -->
+            <Image Source="eye_icon.png" Grid.Row="3"/>
+            <Image x:Name="gear" Source="geaR_icon2.png" Grid.Row="3" Scale="0.5" Margin="0,6,0,0" />
+            <Button x:Name="submitTktBtn" Text="Submit a Ticket" Clicked="openTicketPopup"  BackgroundColor="#003595" TextColor="#fff" HorizontalOptions="End" FontSize="10" VerticalOptions="End" Grid.Row="4" />
+        </Grid>
+        <StackLayout x:Name="popupCreate" BackgroundColor="#C0808080" IsVisible="false" Padding="10, 0"  AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
+
+        </StackLayout>
+        <!-- CREATE FORGOT/TICKET POPUP-->
+        <StackLayout x:Name="popBox" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Padding="10" Orientation="Vertical" >
+            <StackLayout Orientation="Vertical"  WidthRequest="400" BackgroundColor="White" Padding="10">
+                <StackLayout Orientation="Horizontal" WidthRequest="380" HorizontalOptions="FillAndExpand" >
+                    <Label x:Name="popupHeader" Text="Forgotten Username/Password" TextColor="#003595" HorizontalOptions="Start" FontSize="25"/>
+                    <Button  BackgroundColor="Red" TextColor="White" Text="X" HorizontalOptions="EndAndExpand" Clicked="exitPopup" HeightRequest="30" WidthRequest="30" Padding="0" FontSize="20" />
+                </StackLayout>
+                <Label x:Name="popupLabel" Text="Enter your Email: " WidthRequest="70" FontSize="20" VerticalTextAlignment="End"/>
+                <!--Email/Ticket Entry -->
+                <Entry x:Name="emailEntry" TextColor="#038be9"/>
+                <Frame IsVisible="false"   x:Name="ticketEntry" BackgroundColor="Gray" Padding = "10" CornerRadius="20" IsClippedToBounds="true">
+
+                    <Editor x:Name="ticketContent" HeightRequest="120" TextColor="White"/>
+                </Frame>
+
+            </StackLayout>
+            <!--Submit Button -->
+            <Button Clicked="sendEmail" Text="Send"/>
+        </StackLayout>
+        
+    </Grid>
+</ContentPage>

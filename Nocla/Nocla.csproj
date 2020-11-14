@@ -1,0 +1,58 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Apis.Admin.Directory.directory_v1" Version="1.49.0.1982" />
+    <PackageReference Include="Microsoft.Azure.NotificationHubs" Version="4.1.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Nito.AsyncEx" Version="5.1.0" />
+    <PackageReference Include="NSec.Cryptography" Version="20.2.0" />
+    <PackageReference Include="RestSharp" Version="106.11.7" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.8.0" />
+    <PackageReference Include="WindowsAzure.MobileServices" Version="1.3.2" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.6.0-pre2" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.1558-pre3" />  
+    <PackageReference Include="ZXing.Net.Mobile.Forms" Version="3.0.0-beta5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Mono.Android">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\MonoAndroid\v10.0\Mono.Android.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\MessagesPage.xaml.cs">
+      <DependentUpon>MessagesPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\ScanPage.xaml.cs">
+      <DependentUpon>ScanPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\PMView.xaml.cs">
+      <DependentUpon>PMView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\PMSelection.xaml.cs">
+      <DependentUpon>PMSelection.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Views\MessagesPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\ScanPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\PMView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\" />
+  </ItemGroup>
+</Project>
