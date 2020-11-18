@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Nocla.Views;
+using Nocla.Models;
+using System.Net.Http;
+using Newtonsoft.Json.Linq;
 
 namespace Nocla.ViewModels
 {

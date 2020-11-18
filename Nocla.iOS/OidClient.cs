@@ -14,13 +14,7 @@ namespace Nocla.iOS
     class OidClient: IOidClient
     {
         public string PNS { get; set; }
-        public string LoginAsyncResult {
-            get
-            {
-                
-                return "Works";
-            }
-        }
+      
         public string getDeviceID
         {
             get {

@@ -13,6 +13,9 @@ using Android.Widget;
 using AndroidX.Core.App;
 using Firebase.Messaging;
 using WindowsAzure.Messaging;
+using Nocla.Views;
+using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace Nocla.Droid
 {
@@ -103,9 +106,14 @@ namespace Nocla.Droid
             notificationManager.Notify(0, notificationBuilder.Build());
         }
 
-        void SendMessageToMainPage(string body)
+        static async void SendMessageToMainPage(string body)
         {
-            //Todo: add code to handle message
+
+            Device.BeginInvokeOnMainThread(()=> {
+                MsgPage.initMessages();
+            });
+
+                
         }
 
 

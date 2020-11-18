@@ -24,13 +24,7 @@ namespace Nocla.Droid
     public class OidClient: IOidClient
     {
         public string PNS { get; set; }
-        public string LoginAsyncResult
-        {
-            get
-            {
-                return "";
-            }
-        }
+      
 
         //get device id
         public string getDeviceID {

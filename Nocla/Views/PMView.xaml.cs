@@ -6,12 +6,14 @@ using Nocla.Models;
 using Nocla.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
+using Xamarin.Forms.Xaml;
 using Xamarin.Forms.Xaml;
 
 namespace Nocla.Views
@@ -37,6 +39,11 @@ namespace Nocla.Views
         public string name;
         public string currentSPC_slot;
         private int oldTxtLn;
+        private static long outgoArraySize;
+        private static Stopwatch stopwatch = new Stopwatch() ;
+        private static long incoArraySize;
+        private static long time;
+        static int retryCount = 0;
 
         //PM NUMBER AND COLOR NEEDED FROM PM SELECT TO BUILD THIS PAGE
         public PMViewPage(string pm_name, Color color)
@@ -101,7 +108,7 @@ namespace Nocla.Views
             var cookieManager = CookieManager.Instance;
             cookieManager.RemoveAllCookie();
             SPCTimes = new List<SPCTime>();
-            var uri = new Uri("http://jax-apps.com/api.php");
+            var uri = new Uri("https://jax-apps.com/api.php");
             HttpClient myClient = MsgPage.client;
             var formContent = new FormUrlEncodedContent(new[]
             {
@@ -110,10 +117,49 @@ namespace Nocla.Views
             });
 
             var myHttpClient = new HttpClient();
-            var result = await myHttpClient.PostAsync(uri, formContent);
+            // get outgoing packet size
+            outgoArraySize = (await formContent.ReadAsByteArrayAsync()).Length;
+
+            //start stopwatch
+            stopwatch.Restart();
+            HttpResponseMessage result = new HttpResponseMessage();
+            try
+            {
+                result = await myHttpClient.PostAsync(uri, formContent);
+            }
+            catch (System.Exception ex)
+            {
+                retryCount++;
+                if (retryCount < 11)
+                {
+                    Init_spc(color);
+                }
+                else
+                {
+                    Device.BeginInvokeOnMainThread(async () => {
+                        await DisplayAlert("Connection Error", ex.GetType().ToString(), "OK");
+                    });
+                    return;
+                }
+            }
 
             var content = await result.Content.ReadAsStringAsync();
+            //get elapsed time and display diagnostic data
+            stopwatch.Stop();
+            retryCount = 0;
+            if (result.Content == null)
+            {
+                Device.BeginInvokeOnMainThread(async () => {
+                    await DisplayAlert("Server Error", "Unable to reach server", "OK");
+                });
+                return;
+            }
+            //get incoming packet size
+            incoArraySize = (await result.Content.ReadAsByteArrayAsync()).Length;
 
+            time = stopwatch.ElapsedMilliseconds;
+            string diag = string.Format("Outgoing Packet Length:{1}{0}Incoming Packet Length:{2}{0}Time (ms):{3}", Environment.NewLine, outgoArraySize, incoArraySize, time);
+            await DisplayAlert("Get SPC", diag, "OK");
 
             JArray a = JArray.Parse(content);
             foreach (JObject O in a.Children<JObject>())
@@ -178,14 +224,58 @@ namespace Nocla.Views
         private static  async void generateList(Color color)
         {
             Activities = new List<Activity>();
-            var uri = new Uri("http://jax-apps.com/api.php");
+            var uri = new Uri("https://jax-apps.com/api.php");
             HttpClient myClient = MsgPage.client;
             var formContent = new FormUrlEncodedContent(new[]
             {
                 new KeyValuePair<string, string>("actGET", "blah"),
                 new KeyValuePair<string, string>("pm", pm_number)
             });
-            var result = await myClient.PostAsync(uri, formContent);
+
+            // get outgoing packet size
+            outgoArraySize = (await formContent.ReadAsByteArrayAsync()).Length;
+
+            //start stopwatch
+            stopwatch.Restart();
+            HttpResponseMessage result = new HttpResponseMessage();
+            try
+            {
+                result = await myClient.PostAsync(uri, formContent);
+
+            }
+            catch (System.Exception e)
+            {
+                retryCount++;
+                if (retryCount < 11)
+                {
+                    generateList(color);
+                }
+                else
+                {
+                    Device.BeginInvokeOnMainThread(async () => {
+                        await App.Current.MainPage.DisplayAlert("Connection Error", e.GetType().ToString(), "OK");
+                    });
+                    return;
+                }
+            }
+            //get elapsed time and display diagnostic data
+            stopwatch.Stop();
+            if (result.Content == null)
+            {
+                Device.BeginInvokeOnMainThread(async () => {
+                    await App.Current.MainPage.DisplayAlert("Server Error", "Unable to reach server", "OK");
+                });
+                return;
+            }
+            //get incoming packet size
+            incoArraySize = (await result.Content.ReadAsByteArrayAsync()).Length;
+            time = stopwatch.ElapsedMilliseconds;
+            string diag = string.Format("Outgoing Packet Length:{1}{0}Incoming Packet Length:{2}{0}Time (ms):{3}", Environment.NewLine, outgoArraySize, incoArraySize, time);
+            await App.Current.MainPage.DisplayAlert("Generate Act List", diag, "OK");
+
+
+
+
             var content = await result.Content.ReadAsStringAsync();
             JArray a = JArray.Parse(content);
             foreach (JObject O in a.Children<JObject>())
@@ -317,7 +407,7 @@ namespace Nocla.Views
                             {
                                 currentSPCOpen++;
                             }
-                            var url = "http://jax-apps.com/api.php";
+                            var url = "https://jax-apps.com/api.php";
                             var formContent = new FormUrlEncodedContent(new[]
                             {
                 new KeyValuePair<string, string>("spcCHK", "yes"),
@@ -327,10 +417,51 @@ namespace Nocla.Views
 
             });
                             var myHttpClient = new HttpClient();
-                            await myHttpClient.PostAsync(url, formContent);
+
+                            // get outgoing packet size
+                            outgoArraySize = (await formContent.ReadAsByteArrayAsync()).Length;
+
+                            //start stopwatch
+                            stopwatch.Restart();
+
+                            HttpResponseMessage response = new HttpResponseMessage();
+                            try
+                            {
+                                response = await myHttpClient.PostAsync(url, formContent);
+                            }
+                            catch (System.Exception ex)
+                            {
+                                retryCount++;
+                                if (retryCount < 11)
+                                {
+                                    checkOffSPC(sender, e);
+                                }
+                                else
+                                {
+                                    Device.BeginInvokeOnMainThread(async () => {
+                                        await DisplayAlert("Connection Error", ex.GetType().ToString(), "OK");
+                                    });
+                                    return;
+                                }
+                            }
+                            //get elapsed time and display diagnostic data
+                            stopwatch.Stop();
+                            retryCount = 0;
+                            if (response.Content == null)
+                            {
+                                Device.BeginInvokeOnMainThread(async () => {
+                                    await DisplayAlert("Server Error", "Unable to reach server", "OK");
+                                });
+                                return;
+                            }
+                            //get incoming packet size
+                            incoArraySize = (await response.Content.ReadAsByteArrayAsync()).Length;
+                            time = stopwatch.ElapsedMilliseconds;
+                            string diag = string.Format("Outgoing Packet Length:{1}{0}Incoming Packet Length:{2}{0}Time (ms):{3}", Environment.NewLine, outgoArraySize, incoArraySize, time);
+                            await DisplayAlert("Check Off SPC", diag, "OK");
                             //post to recent activities
                             string msg = System.String.Format("{0} SPC#{1} ", action, (pos + 1).ToString());
-                            postACT(DateTime.Now.ToString("HH"), DateTime.Now.ToString("mm"),DateTime.Now.ToString("ss"), msg);
+                            postACT(DateTime.Now.ToString("HH"), DateTime.Now.ToString("mm"),DateTime.Now.ToString("ss"), msg, false);
                         }
                         else
                         {
@@ -382,11 +513,11 @@ namespace Nocla.Views
         {
             //assume valid input. input is invalid if missing or not a real time
             bool invalid = false;
-            string time = spcEntry.Text.ToString();
+            string t = spcEntry.Text.ToString();
             int hour = 60;
             int min = 60;
-            string hourStr = time.Substring(0, 2);
-            string minStr = time.Substring(time.Length - 2);
+            string hourStr = t.Substring(0, 2);
+            string minStr = t.Substring(t.Length - 2);
             //try to fetch input, if error flag as invalid
             try
             {
@@ -408,7 +539,7 @@ namespace Nocla.Views
             //else update database
             else
             {
-                var url = "http://jax-apps.com/api.php";
+                var url = "https://jax-apps.com/api.php";
                 var formContent = new FormUrlEncodedContent(new[]
                 {
                 new KeyValuePair<string, string>("spcPOST", "yes"),
@@ -418,12 +549,53 @@ namespace Nocla.Views
                 new KeyValuePair<string, string>("slot", currentSPC_slot )
             });
                 var myHttpClient = new HttpClient();
-                var response = await myHttpClient.PostAsync(url, formContent);
+                // get outgoing packet size
+                outgoArraySize = (await formContent.ReadAsByteArrayAsync()).Length;
+
+                //start stopwatch
+                stopwatch.Restart();
+                HttpResponseMessage response = new HttpResponseMessage();
+                try
+                {
+                    response = await myHttpClient.PostAsync(url, formContent);
+                }
+                catch (System.Exception ex)
+                {
+                    retryCount++;
+                    if (retryCount < 11)
+                    {
+                        sendSPC(sender, e);
+                    }
+                    else
+                    {
+                        Device.BeginInvokeOnMainThread(async () => {
+                            await DisplayAlert("Connection Error", ex.GetType().ToString(), "OK");
+                        });
+                        return;
+                    }
+                }
+
+                //get elapsed time and display diagnostic data
+                stopwatch.Stop();
+                retryCount = 0;
+                if (response.Content == null)
+                {
+                    Device.BeginInvokeOnMainThread(async () => {
+                        await DisplayAlert("Server Error", "Unable to reach server", "OK");
+                    });
+                    return;
+                }
+                //get incoming packet size
+                incoArraySize = (await response.Content.ReadAsByteArrayAsync()).Length;
+                time = stopwatch.ElapsedMilliseconds;
+                string diag = string.Format("Outgoing Packet Length:{1}{0}Incoming Packet Length:{2}{0}Time (ms):{3}", Environment.NewLine, outgoArraySize, incoArraySize, time);
+                await DisplayAlert("Send SPC", diag, "OK");
+
                 //change timeslot
                 spcSlots[Int32.Parse(currentSPC_slot) - 1].Text = spcEntry.Text.ToString();
                 //post to recent activities
                 string msg = System.String.Format("Updated SPC#{0} to {1}:{2}",currentSPC_slot, hourStr,minStr);
-                postACT(DateTime.Now.ToString("HH"), DateTime.Now.ToString("mm"), DateTime.Now.ToString("ss"), msg);
+                postACT(DateTime.Now.ToString("HH"), DateTime.Now.ToString("mm"), DateTime.Now.ToString("ss"), msg, false);
                 //close the popup
                 popupBG.IsVisible = false;
                 spcBox.IsVisible = false;
@@ -449,7 +621,7 @@ namespace Nocla.Views
                 
                 // update database
                 
-                    var url = "http://jax-apps.com/api.php";
+                    var url = "https://jax-apps.com/api.php";
                     var formContent = new FormUrlEncodedContent(new[]
                     {
                 new KeyValuePair<string, string>("spcCLR", "yes"),
@@ -457,9 +629,49 @@ namespace Nocla.Views
                 new KeyValuePair<string, string>("slot", currentSPC_slot )
             });
                     var myHttpClient = new HttpClient();
-                    var response = await myHttpClient.PostAsync(url, formContent);
-                    //change timeslot
-                    spcSlots[Int32.Parse(currentSPC_slot) - 1].Text = "--:--";
+
+                // get outgoing packet size
+                outgoArraySize = (await formContent.ReadAsByteArrayAsync()).Length;
+
+                //start stopwatch
+                stopwatch.Restart();
+                HttpResponseMessage response = new HttpResponseMessage();
+                try
+                {
+                    response = await myHttpClient.PostAsync(url, formContent);
+                }
+                catch (System.Exception ex)
+                {
+                    retryCount++;
+                    if (retryCount < 11)
+                    {
+                        clearSPC(sender, e);
+                    }
+                    else
+                    {
+                        Device.BeginInvokeOnMainThread(async () => {
+                            await DisplayAlert("Connection Error", ex.GetType().ToString(), "OK");
+                        });
+                    }
+                }
+
+                //get elapsed time and display diagnostic data
+                stopwatch.Stop();
+                retryCount = 0;
+                if (response.Content == null)
+                {
+                    Device.BeginInvokeOnMainThread(async () => {
+                        await DisplayAlert("Server Error", "Unable to reach server", "OK");
+                    });
+                    return;
+                }
+                //get incoming packet size
+                incoArraySize = (await response.Content.ReadAsByteArrayAsync()).Length;
+                time = stopwatch.ElapsedMilliseconds;
+                string diag = string.Format("Outgoing Packet Length:{1}{0}Incoming Packet Length:{2}{0}Time (ms):{3}", Environment.NewLine, outgoArraySize, incoArraySize, time);
+                await DisplayAlert("Clear SPC", diag, "OK");
+                //change timeslot
+                spcSlots[Int32.Parse(currentSPC_slot) - 1].Text = "--:--";
 
                     //close the popup
                     popupBG.IsVisible = false;
@@ -516,14 +728,14 @@ namespace Nocla.Views
             //else update database
             else
             {
-                postACT(hour.ToString(), min.ToString(),"00",  actContent.Text.ToString());
+                postACT(hour.ToString(), min.ToString(),"00",  actContent.Text.ToString(),false);
                 //close the popup
                 popupBG.IsVisible = false;
                 actBox.IsVisible = false;
             }
         }
-        public static async void postACT(string h, string m,string s,  string content) {
-                var url = "http://jax-apps.com/api.php";
+        public static async void postACT(string h, string m,string s,  string content, bool fromScan) {
+                var url = "https://jax-apps.com/api.php";
                 var formContent = new FormUrlEncodedContent(new[]
                 {
                 new KeyValuePair<string, string>("actPOST", "yes"),
@@ -535,14 +747,55 @@ namespace Nocla.Views
                 new KeyValuePair<string, string>("author", LoginViewModel.user.getUsername().ToUpper() )
             });
                 var myHttpClient = new HttpClient();
-                var response = await myHttpClient.PostAsync(url, formContent);
+            // get outgoing packet size
+            outgoArraySize = (await formContent.ReadAsByteArrayAsync()).Length;
 
-            
+            //start stopwatch
+            stopwatch.Restart();
+            HttpResponseMessage response = new HttpResponseMessage();
+            try
+            {
+                response = await myHttpClient.PostAsync(url, formContent);
+            }
+            catch (System.Exception e)
+            {
+                retryCount++;
+                if (retryCount < 11)
+                {
+                    postACT(h, m, s, content, fromScan);
+                }
+                else
+                {
+                    Device.BeginInvokeOnMainThread(async () => {
+                        await App.Current.MainPage.DisplayAlert("Connection Error", e.GetType().ToString(), "OK");
+                    });
+                    return;
+                }
+            }
+
+
+            //get elapsed time and display diagnostic data
+            stopwatch.Stop();
+            retryCount = 0;
+            if (response.Content == null)
+            {
+                Device.BeginInvokeOnMainThread(async () => {
+                    await App.Current.MainPage.DisplayAlert("Server Error", "Unable to reach server", "OK");
+                });
+                return;
+            }
+            //get incoming packet size
+            incoArraySize = (await response.Content.ReadAsByteArrayAsync()).Length;
+            time = stopwatch.ElapsedMilliseconds;
+            string diag = string.Format("Outgoing Packet Length:{1}{0}Incoming Packet Length:{2}{0}Time (ms):{3}", Environment.NewLine, outgoArraySize, incoArraySize, time);
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                await App.Current.MainPage.DisplayAlert("Post Act", diag, "OK");
+            });
 
 
 
-
-            generateList(c);
+            if (!fromScan) { generateList(c); }
             
         }
         async void clearACT(object sender, EventArgs e) {
@@ -558,14 +811,53 @@ namespace Nocla.Views
         
         public async void getRM() {
             rmAssigns = new List<MaterialAssignment>();
-            var uri = new Uri("http://jax-apps.com/api.php");
+            var uri = new Uri("https://jax-apps.com/api.php");
             HttpClient myClient = MsgPage.client;
             var formContent = new FormUrlEncodedContent(new[]
             {
                 new KeyValuePair<string, string>("rmGET", "blah"),
                 new KeyValuePair<string, string>("pm", pm_number)
             });
-            var result = await myClient.PostAsync(uri, formContent);
+            // get outgoing packet size
+            outgoArraySize = (await formContent.ReadAsByteArrayAsync()).Length;
+
+            //start stopwatch
+            stopwatch.Restart();
+            HttpResponseMessage result = new HttpResponseMessage();
+            try
+            {
+                result = await myClient.PostAsync(uri, formContent);
+            }
+            catch (System.Exception e)
+            {
+                retryCount++;
+                if (retryCount < 11)
+                {
+                    getRM();
+                }
+                else
+                {
+                    Device.BeginInvokeOnMainThread(async () => {
+                        await DisplayAlert("Connection Error", e.GetType().ToString(), "OK");
+                    });
+                    return;
+                }
+            }
+            //get elapsed time and display diagnostic data
+            stopwatch.Stop();
+            retryCount = 0;
+            if (result.Content == null)
+            {
+                Device.BeginInvokeOnMainThread(async () => {
+                    await DisplayAlert("Server Error", "Unable to reach server", "OK");
+                });
+                return;
+            }
+            //get incoming packet size
+            incoArraySize = (await result.Content.ReadAsByteArrayAsync()).Length;
+            time = stopwatch.ElapsedMilliseconds;
+            string diag = string.Format("Outgoing Packet Length:{1}{0}Incoming Packet Length:{2}{0}Time (ms):{3}", Environment.NewLine, outgoArraySize, incoArraySize, time);
+            await DisplayAlert("Get RM", diag, "OK");
             var content = await result.Content.ReadAsStringAsync();
             if (content == null || content.Length == 0) { return; } 
             JArray a = JArray.Parse(content);

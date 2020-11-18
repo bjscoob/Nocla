@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -18,7 +19,11 @@ namespace Nocla.Views
         string Title;
         public string pm_num;
         public bool noMoreScan = false;
-
+        private Stopwatch stopwatch = new Stopwatch();
+        private long incoArraySize;
+        private long time;
+        private long outgoArraySize;
+        int retryCount = 0;
         public string RMType { get; set; }
 
         //NEEDS RAW MATERIAL TYPE AND PM NUMBER TO BUIULD PAGE
@@ -44,7 +49,22 @@ namespace Nocla.Views
 
                 //PARSE QR DATA AND SEND TO BACKEND
                 string[] newRMData = result.Text.Split('|');
-                sendData(newRMData);
+
+                //check if label data fits
+                if (newRMData.Length < 3)
+                {
+                    Device.BeginInvokeOnMainThread(async () =>
+                    {
+                        await App.Current.MainPage.DisplayAlert("Scanned result", "Invalid Label", "OK");
+
+                        //open scanner
+                        noMoreScan = false;
+                    });
+                }
+                else
+                {
+                    sendData(newRMData);
+                }
                 
             }
         }
@@ -54,7 +74,7 @@ namespace Nocla.Views
         public async void sendData(string[] data)
         {
             
-            var url = "http://jax-apps.com/api.php";
+            var url = "https://jax-apps.com/api.php";
             var formContent = new FormUrlEncodedContent(new[]
             {
                 new KeyValuePair<string, string>("rm", pm_num),
@@ -64,16 +84,63 @@ namespace Nocla.Views
                 new KeyValuePair<string, string>("expdate", data[2])
             });
             var myHttpClient = MsgPage.client;
-            var response = await myHttpClient.PostAsync(url, formContent);
+
+            // get outgoing packet size
+            outgoArraySize = (await formContent.ReadAsByteArrayAsync()).Length;
+
+            //start stopwatch
+            stopwatch.Restart();
+            HttpResponseMessage response = new HttpResponseMessage();
+            try
+            {
+                response = await myHttpClient.PostAsync(url, formContent);
+            }
+            catch (Exception e)
+            {
+                retryCount++;
+                if (retryCount < 11)
+                {
+                    sendData(data);
+                }
+                else
+                {
+                    Device.BeginInvokeOnMainThread(async () => {
+                        await DisplayAlert("Connection Error", e.GetType().ToString(), "OK");
+                    });
+                    return;
+                }
+            }
+
+            //get elapsed time and display diagnostic data
+            stopwatch.Stop();
+            retryCount = 0;
+            if (response.Content == null)
+            {
+                Device.BeginInvokeOnMainThread(async () => {
+                    await DisplayAlert("Server Error", "Unable to reach server", "OK");
+                });
+                return;
+            }
+            //get incoming packet size
+            incoArraySize = (await response.Content.ReadAsByteArrayAsync()).Length;
+            time = stopwatch.ElapsedMilliseconds;
+            string diag = string.Format("Outgoing Packet Length:{1}{0}Incoming Packet Length:{2}{0}Time (ms):{3}", Environment.NewLine, outgoArraySize, incoArraySize, time);
+         
             var content = await response.Content.ReadAsStringAsync();
-            //post to recent activities
-            string container = "Bag";
-            if (RMType == "FT32") { container = "Tank"; }
-            string msg = System.String.Format("Changed {0}: {1} {2}#{3} ", RMType, data[0], container, data[1]);
-            PMViewPage.postACT(DateTime.Now.ToString("HH"), DateTime.Now.ToString("mm"), DateTime.Now.ToString("ss"), msg);
+
+            //post changes to activity log
+            if (content == "Success!")
+            {
+                string container = "Bag";
+                if (RMType == "FT32") { container = "Tank"; }
+                string msg = System.String.Format("Changed {0}: {1} {2}#{3} ", RMType, data[0], container, data[1]);
+                PMViewPage.postACT(DateTime.Now.ToString("HH"), DateTime.Now.ToString("mm"), DateTime.Now.ToString("ss"), msg, true);
+            }
+            else { 
+            }
             Device.BeginInvokeOnMainThread(async () =>
             {
-                await DisplayAlert("Scanned result", content, "OK");
+                await App.Current.MainPage.DisplayAlert("Scanned result", content +Environment.NewLine+ diag, "OK");
             });
         }
     

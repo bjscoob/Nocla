@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Input;
 using Android.Webkit;
 using Newtonsoft.Json;
@@ -23,7 +25,11 @@ namespace Nocla.Views
         private static Image gearIcon;
         private static bool performRotation = false;
         private static bool firstAnim = true;
-
+        Stopwatch stopwatch = new Stopwatch();
+        long incoArraySize;
+        long outgoArraySize;
+        long time;
+        int retryCount = 0;
         //RETRIEVE DEVICE ID (PLATFORM SPECIFIC CODE) ***MOVE TO VIEW MODEL***
         public static string deviceId = DependencyService.Get<IOidClient>().getDeviceID;
         public bool popupIsTicket = false;
@@ -115,21 +121,63 @@ namespace Nocla.Views
         private async Task<string> authenticate()
         {
 
-            var url = "http://jax-apps.com/auth.php";
+            var url = "https://jax-apps.com/auth.php";
 
             var formContent = new FormUrlEncodedContent(new[]
             {
                 new KeyValuePair<string, string>("name", userEntry.Text.ToString()),
                 new KeyValuePair<string, string>("pswd", passEntry.Text.ToString())
             });
+            // get outgoing packet size
+            outgoArraySize = (await formContent.ReadAsByteArrayAsync()).Length;
 
+            //start stopwatch
+            stopwatch.Restart();
+
+            //perform POST operation
             var myHttpClient = new HttpClient();
-            var response = await myHttpClient.PostAsync(url, formContent);
 
-            var result = await response.Content.ReadAsStringAsync();
-            return result;
+            HttpResponseMessage response = new HttpResponseMessage();
+            try
+            {
+                response = await myHttpClient.PostAsync(url, formContent);
+
+
+
+                if (response.Content == null)
+                {
+                    return "Unable to reach server";
+                }
+                var result = await response.Content.ReadAsStringAsync();
+                retryCount = 0;
+                //get incoming packet size
+                incoArraySize = (await response.Content.ReadAsByteArrayAsync()).Length;
+
+                //get elapsed time and display diagnostic data
+                stopwatch.Stop();
+                time = stopwatch.ElapsedMilliseconds;
+                string diag = string.Format("Outgoing Packet Length:{1}{0}Incoming Packet Length:{2}{0}Time (ms):{3}", Environment.NewLine, outgoArraySize, incoArraySize, time);
+                await DisplayAlert("Login Operation", diag, "OK");
+
+                return result;
+            }
+
+
+            catch (Exception e)
+            {
+                retryCount++;
+                if (retryCount < 11)
+                {
+                    authenticate();
+                }
+                else
+                {
+                  return e.GetType().ToString();
+                  
+                }
+            }
+            return "Unknown Error";
         }
-
         async void openForgotPopup(object sender, EventArgs e)
         {
             restorePopup();
@@ -177,10 +225,53 @@ namespace Nocla.Views
             // SEND EMAIL TO USER
             else
             { 
-                var uri = new Uri("http://jax-apps.com/rp.php?email=" + emailEntry.Text.ToString());
+                var uri = new Uri("https://jax-apps.com/rp.php?email=" + emailEntry.Text.ToString());
                 HttpClient myClient = MsgPage.client;
 
-                var response = await myClient.GetAsync(uri);
+                // get outgoing packet size
+                outgoArraySize = (await myClient.GetByteArrayAsync(uri)).Length;
+
+                //start stopwatch
+                stopwatch.Restart();
+
+                //perform GET operation
+                HttpResponseMessage response = new HttpResponseMessage();
+                try
+                {
+                    response = await myClient.GetAsync(uri);
+                }
+                catch (Exception ex)
+                {
+                    retryCount++;
+                    if (retryCount < 11)
+                    {
+                        sendEmail(sender, e);
+                    }
+                    else
+                    {
+                        Device.BeginInvokeOnMainThread(async () => {
+                            await DisplayAlert("Connection Error", ex.GetType().ToString(), "OK");
+                        });
+
+                        return;
+                    }
+                }
+
+                //get elapsed time and display diagnostic data
+                stopwatch.Stop();
+                //get incoming packet size
+                if (response.Content == null)
+                {
+                    Device.BeginInvokeOnMainThread(async () => {
+                        await DisplayAlert("Server Error", "Unable to reach server", "OK");
+                    });
+                    return;
+                }
+                incoArraySize = (await response.Content.ReadAsByteArrayAsync()).Length;
+                retryCount = 0;
+                time = stopwatch.ElapsedMilliseconds;
+                string diag = string.Format("Outgoing Packet Length:{1}{0}Incoming Packet Length:{2}{0}Time (ms):{3}", Environment.NewLine, outgoArraySize, incoArraySize, time);
+                await DisplayAlert("Forgot Login Operation", diag, "OK");
                 if (response.IsSuccessStatusCode)
                 {
 
