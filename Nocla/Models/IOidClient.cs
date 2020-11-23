@@ -1,15 +1,17 @@
-﻿using Nocla.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿
 
-namespace Nocla.Models
+using System.Threading.Tasks;
+
+namespace Nocla
 {
     //IODClient CLASS: Interface for Dependency Injection. These methods can be called from either the Android or Apple base platform
     public interface IOidClient
     {
         string getDeviceID { get; }
         string PNS { get; set; }
-        void registerUsername( string u);
+        Task<bool> registerUsername( string u);
+
     }
+
+
 }

@@ -25,9 +25,10 @@ namespace Nocla.Models
         }
         string position { get; set; }
         string shift { get; set; }
-        int manager { get; set; }
+        public int manager { get; set; }
         int pm_assignment { get; set; }
         string status { get; set; }
+        public string photo { get; set; }
 
 
         //Creates user, requires string array of data
@@ -46,6 +47,7 @@ namespace Nocla.Models
                 manager = Int32.Parse(data[8]);
                 pm_assignment = Int32.Parse(data[9]);
                 status = data[10];
+                photo = "https://jax-apps.com/images/"+data[11];
             }
             catch (Exception e)
             {

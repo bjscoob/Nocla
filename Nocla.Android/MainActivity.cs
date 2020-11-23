@@ -38,10 +38,9 @@ namespace Nocla.Droid
             deviceID = Android.Provider.Settings.Secure.GetString(Android.App.Application.Context.ContentResolver, Android.Provider.Settings.Secure.AndroidId);
             // REGISTERS OID CLient for Dependency Injection
             DependencyService.Register<IOidClient, OidClient>();
-            
             base.OnCreate(savedInstanceState);
-
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
+
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
 
             //Init QR scanner

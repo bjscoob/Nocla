@@ -34,6 +34,10 @@
 	<string>Assets.xcassets/AppIcon.appiconset</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Please allow access to the camera to scan barcodes</string>
+  <key>NSPhotoLibraryUsageDescription</key>
+  <string>This app needs access to photos.</string>
+  <key>NSPhotoLibraryAddUsageDescription</key>
+  <string>This app needs access to the photo gallery.</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

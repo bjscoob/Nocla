@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using Nocla.Models;
+using Nocla.Templates;
 using Nocla.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -28,9 +29,13 @@ namespace Nocla.Views
         private static long incoArraySize;
         private static long time;
         private static int retryCount=0;
+        private Label currMenuItem = null;
+        public static Image userImg;
+        ColorTypeConverter converter = new ColorTypeConverter();
 
         public MsgPage()
         {
+
             //MAKE NEW HTTPCLIENT TO TALK TO PHP BACKEND
             client = new HttpClient();
             client.CancelPendingRequests();
@@ -39,19 +44,39 @@ namespace Nocla.Views
             InitializeComponent();
             nameField = Fullname;
             messageList = msgList;
+            userImg = userPhoto;
             this.BindingContext = this;
 
         }
 
         //CHANGES USER FIRST AND LAST NAME AT TOP OF SCREEN
-        public static void updateName(string name) {
+        public async static void updateName(string name) {
             nameField.Text = "Hello, " + LoginViewModel.user.getFLName();
+            userImg.Source =  new UriImageSource
+            {
+                Uri = new Uri(LoginViewModel.user.photo),
+                CachingEnabled = false
+            };
             initContactBank();
             initMessages();
         }
 
         public async static void initMessages() {
 
+
+            try
+            {
+                var cachePath = System.IO.Path.GetTempPath();
+
+                // If exist, delete the cache directory and everything in it recursivly
+                if (System.IO.Directory.Exists(cachePath))
+                    System.IO.Directory.Delete(cachePath, true);
+
+                // If not exist, restore just the directory that was deleted
+                if (!System.IO.Directory.Exists(cachePath))
+                    System.IO.Directory.CreateDirectory(cachePath);
+            }
+            catch (Exception) { }
             List<Message> messages = new List<Message>();
             var uri = new Uri("https://jax-apps.com/msgapi.php");
             HttpClient myClient = MsgPage.client;
@@ -121,7 +146,7 @@ namespace Nocla.Views
                     id = id,
                     username = msgdata[3],
                     fullname = msgdata[4],
-                    photo_url = msgdata[2],
+                    photo_url = "https://jax-apps.com/images/" + msgdata[2],
                     content = msgdata[5],
                     date = dt,
                     time = t
@@ -196,13 +221,17 @@ namespace Nocla.Views
 
                 }
                 int id = Int32.Parse(contactdata[0]);
+                if (id == LoginViewModel.user.manager) {
+                    settingsPage.initManager(contactdata[2]+" "+contactdata[3]);
+                }
                 contactBank.Add(new Contact
                 {
                     contactId= id,
                     username = contactdata[1],
                     firstname = contactdata[2],
                     lastname = contactdata[3],
-                    isContactGroup = contactdata[4] == "1"
+                    isContactGroup = contactdata[5] == "1",
+                    imageStr = "https://jax-apps.com/images/" + contactdata[4]
                 });
 
 
@@ -237,7 +266,7 @@ namespace Nocla.Views
         async void addToContacts(object sender, EventArgs e) {
             Label l = (Label)sender;
             string s = l.Text.ToString().ToUpper();
-            ColorTypeConverter converter = new ColorTypeConverter();
+            
             s = strip(s);
             if (!Recipients.Contains(s))
             {
@@ -387,7 +416,64 @@ namespace Nocla.Views
            
             return c;
         }
-        
+        void showMenu(object sender, EventArgs e)
+        {
+            msgSubPage.IsVisible = false;
+            menuSubPage.IsVisible = true;
+            msgBack.IsVisible = true;
+            menuBtn.IsVisible = false;
+        }
+        void showMessages(object sender, EventArgs e)
+        {
+            msgSubPage.IsVisible = true;
+            menuSubPage.IsVisible = false;
+            msgBack.IsVisible = false;
+            menuBtn.IsVisible = true;
+            messageList.ItemsSource = messageBank;
+        }
+        void settingsFocus(object sender, EventArgs e)
+        {
+            menuSwitch(sender);
+        }
+        void cgFocus(object sender, EventArgs e)
+        {
+            menuSwitch(sender);
+
+        }
+        void helpFocus(object sender, EventArgs e)
+        {
+            menuSwitch(sender);
+        }
+        async void signoutFocus(object sender, EventArgs e)
+        {
+            menuSwitch(sender);
+            bool answer = await App.Current.MainPage.DisplayAlert("Sign Out","Are you sure you want to sign out?","YES", "NO");
+            if (answer) {
+                logout();
+            }
+            else { settingsFocus(stgsBtn, null); }
+        }
+
+        private async void logout()
+        {
+            LoginViewModel.user = null;
+            LoginViewModel.updateStatus();
+            Device.BeginInvokeOnMainThread(async ()=>
+                await Navigation.PushAsync(new LoginPage())
+                );
+        }
+
+        void menuSwitch(object sender)
+        {
+            if (currMenuItem != null)
+            {
+                currMenuItem.TextColor = Color.White;
+            }
+            Label l = (Label)sender;
+            l.TextColor = (Color)(converter.ConvertFromInvariantString("#9fbfdf"));
+            currMenuItem = l;
+        }
     }
+    
 
     }

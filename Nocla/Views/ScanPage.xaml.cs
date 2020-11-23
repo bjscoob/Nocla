@@ -29,6 +29,7 @@ namespace Nocla.Views
         //NEEDS RAW MATERIAL TYPE AND PM NUMBER TO BUIULD PAGE
         public ScanPage(string RMType, string pmNum)
         {
+           
             noMoreScan = false;
             Title = "Scan New "+RMType;
             this.RMType = RMType;

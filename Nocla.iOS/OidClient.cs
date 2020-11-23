@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Auth0.OidcClient;
 using Foundation;
 using Nocla.iOS;
@@ -21,8 +22,9 @@ namespace Nocla.iOS
                 return "todo";
             }
         }
-        public async void registerUsername(string user)
+        public async Task<bool> registerUsername(string user)
         {
+            return true;
         }
 
     }

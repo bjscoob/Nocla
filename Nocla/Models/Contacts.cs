@@ -10,6 +10,7 @@ namespace Nocla.Models
         public string username;
         public string firstname;
         public string lastname;
+        public string imageStr;
         public bool isContactGroup;
         public List<Contact> innerContacts;
         public string toString() {

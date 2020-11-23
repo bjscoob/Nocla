@@ -10,6 +10,7 @@ using System.Windows.Input;
 using Android.Webkit;
 using Newtonsoft.Json;
 using Nocla.Models;
+using Nocla.Templates;
 using Nocla.ViewModels;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -43,10 +44,8 @@ namespace Nocla.Views
             cookieManager.RemoveAllCookie();
             InitializeComponent();
 
-            
 
-            //SET BINDING DATA FOR XAML 
-            this.BindingContext = new LoginViewModel();
+
 
             //GET GEAR ICON
             gearIcon = gear;
@@ -79,6 +78,7 @@ namespace Nocla.Views
             {
                 await gearIcon.RotateTo(360, 800, Easing.Linear);
                 await gearIcon.RotateTo(0, 0); // reset to initial position
+                if (LoginViewModel.CheckStatus()) { return; }
             }
         }
 
@@ -104,16 +104,19 @@ namespace Nocla.Views
                 }
                 else
                 {
-                    Device.BeginInvokeOnMainThread(async () =>
-                    {
-                        LoginViewModel.user = new User(userdata);
-                        LoginViewModel.updateStatus();
-                        MsgPage.updateName(LoginViewModel.user.getFLName());
-                        DependencyService.Get<IOidClient>().registerUsername(LoginViewModel.user.getUsername());
-                        AppConstants.SubscriptionTags.Add(LoginViewModel.user.getUsername());
-                        Application.Current.Properties["username"] = LoginViewModel.user.getUsername();
-                        await Navigation.PopAsync();
-                    });
+                    
+                       
+                            
+                            LoginViewModel.user = new User(userdata);
+                            LoginViewModel.updateStatus();
+                            MsgPage.updateName(LoginViewModel.user.getFLName());
+                            await DependencyService.Get<IOidClient>().registerUsername(LoginViewModel.user.getUsername());
+                            AppConstants.SubscriptionTags.Add(LoginViewModel.user.getUsername());
+                            Application.Current.Properties["username"] = LoginViewModel.user.getUsername();
+                            settingsPage.initUserData(userdata);
+                            await Navigation.PopAsync();
+                        
+                    
                 }
             }
         }

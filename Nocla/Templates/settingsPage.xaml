@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Grid xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Nocla.Templates.settingsPage"
+                >
+    <Grid Padding="5,15,5,75"
+      RowSpacing="10"
+      ColumnSpacing="10">
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="60"/>
+       <RowDefinition Height="60"/>
+    </Grid.RowDefinitions>
+    <StackLayout Grid.ColumnSpan="2" Orientation="Vertical" Margin="-20,0,0,0">
+        <StackLayout  Orientation="Vertical" Margin="0,-15,-15,-15">
+            <Label x:Name="usernameLabel" Text="JACKSBRN" TextColor="Gray" FontSize="12" HorizontalTextAlignment="End"/>
+                <Label x:Name="IDLabel" Text="Employee Id: 424" Margin="0,-12,0,0" TextColor="Gray" FontSize="12" Font="Italic,12" HorizontalTextAlignment="End"/>
+        </StackLayout>
+        <Label x:Name="flName" Text="Brandon Jackson" TextColor="#003595" Font="Bold,25"  />
+        <Label x:Name="position" Text="Position" TextColor="#003595" Font="Italic,20" Margin="0,-15,0,0"  VerticalTextAlignment="Start"  />
+        <Label x:Name="shift" Text="I Shift" TextColor="#003595"/>
+        <Label x:Name="email" Text="email@nocla.com" TextColor="#003595"/>
+        <Label x:Name="manager" Text="Manager: HOLMESH1" TextColor="#003595"/>
+        <Label x:Name="assignment" Text="Assignment: PM 8" TextColor="#003595"/>
+        
+    </StackLayout>
+   
+    <Button Grid.Column="0" Grid.Row="1" x:Name="changePhotoBtn" Text="Photo" TextColor="White" BorderColor="#0497f4" Clicked="changePhoto">
+        <Button.Background>
+            <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1" >
+
+                <GradientStop Color="#0497f4" Offset="0" />
+
+                <GradientStop Color="#84ae88" Offset="1" />
+
+            </LinearGradientBrush>
+
+        </Button.Background>
+    </Button>
+    <Button Grid.Column="0" Grid.Row="2" x:Name="changeNameBtn" Text="Name" TextColor="White" BorderColor="#0497f4" Clicked="showChangeName">
+        <Button.Background>
+            <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1" >
+
+                <GradientStop Color="#0497f4" Offset="0" />
+
+                <GradientStop Color="#c56f6d" Offset="1" />
+
+            </LinearGradientBrush>
+
+        </Button.Background>
+    </Button>
+        <Button Grid.Column="1" Grid.Row="1" x:Name="changePasswordBtn" Text="Password" Padding="2" TextColor="White" BorderColor="#0497f4" Clicked="resetPassword">
+        <Button.Background>
+            <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1" >
+
+                <GradientStop Color="#0497f4" Offset="0" />
+
+                <GradientStop Color="#b180b2" Offset="1" />
+
+            </LinearGradientBrush>
+
+        </Button.Background>
+    </Button>
+    <Button Grid.Column="1" Grid.Row="2" x:Name="changeEmailBtn" Text="Email"  TextColor="White" BorderColor="#0497f4" Clicked="showChangeEmail">
+        <Button.Background>
+            <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1" >
+
+                <GradientStop Color="#0497f4" Offset="0" />
+
+                <GradientStop Color="#c48d6e" Offset="1" />
+
+            </LinearGradientBrush>
+
+        </Button.Background>
+    </Button>
+    </Grid>
+    <StackLayout x:Name="popupCreate" BackgroundColor="#C0808080" IsVisible="false" Padding="10, 0">
+
+    
+    <!-- change Name/Email Popup-->
+    <StackLayout x:Name="popBox" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Padding="10" Orientation="Vertical" >
+        <StackLayout Orientation="Vertical"  WidthRequest="400" BackgroundColor="White" Padding="10">
+            <StackLayout Orientation="Horizontal" WidthRequest="380" HorizontalOptions="FillAndExpand" >
+                <Label x:Name="popupHeader" Text="Change Name" TextColor="#003595" HorizontalOptions="Start" FontSize="25"/>
+                <Button  BackgroundColor="Red" TextColor="White" Text="X" HorizontalOptions="EndAndExpand" Clicked="exitPopup" HeightRequest="30" WidthRequest="30" Padding="0" FontSize="20" />
+            </StackLayout>
+                <Label x:Name="firstLabel" Text="First Name" WidthRequest="70" FontSize="20" VerticalTextAlignment="End"/>
+                <Entry x:Name="firstEntry" TextColor="#038be9"/>
+                <Label x:Name="secondLabel" Text="First Name" WidthRequest="70" FontSize="20" VerticalTextAlignment="End"/>
+                <Entry x:Name="secondEntry" TextColor="#038be9"/>
+
+            </StackLayout>
+        <!--Submit Button -->
+        <Button x:Name="submitBtn"  Text="Send"/>
+    </StackLayout>
+    </StackLayout>
+</Grid>

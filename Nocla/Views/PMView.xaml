@@ -10,10 +10,11 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="50"></RowDefinition>
-                    <RowDefinition Height="200"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="100"></RowDefinition>
                     <RowDefinition Height="175"></RowDefinition>
-                </Grid.RowDefinitions>
+                <RowDefinition Height="75"></RowDefinition>
+            </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
@@ -37,21 +38,27 @@
                                             <RowDefinition Height="40" />
                                         </Grid.RowDefinitions>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="280" />
-                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="220" />
+                                            <ColumnDefinition Width="15" />
                                         </Grid.ColumnDefinitions>
                                         <Grid VerticalOptions="Fill" HorizontalOptions="CenterAndExpand" Grid.Column="0" >
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="25"></RowDefinition>
                                             </Grid.RowDefinitions>
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="60"></ColumnDefinition>
+                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
                                             </Grid.ColumnDefinitions>
-                                            <Frame BackgroundColor="{Binding color_text}" HorizontalOptions="StartAndExpand" Grid.Column="0" ></Frame>
-                                            <Label Text="{Binding Time}" TextColor="White" FontSize="18" Padding="2"/>
+
+                                        <Grid Grid.Column="0">
+                                            <Button BackgroundColor="{Binding color_text}"  />
+                                            <Label Text="{Binding Time}" TextColor="White" FontSize="18" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center"/>
                                         </Grid>
+                                            
+                                       
+                                    </Grid>
                                     <ScrollView Orientation="Horizontal" Grid.Column="1"  >
+                                        
                                         <Grid VerticalOptions="Fill" HorizontalOptions="StartAndExpand"  >
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto"></RowDefinition>
@@ -60,7 +67,7 @@
                                                 <ColumnDefinition Width="*"></ColumnDefinition>
                                             </Grid.ColumnDefinitions>
                                             <Label Text="{Binding content}" Font="20" HorizontalOptions="StartAndExpand" Grid.Row="0"/>
-                                            <Label Text="{Binding author}" TextColor="LightGray" HorizontalOptions="StartAndExpand" Grid.Row="1"/>
+                                            <Label Text="{Binding author}" TextColor="LightGray" HorizontalOptions="StartAndExpand" Grid.Row="1" Margin="0,-10,0,0"/>
                                         </Grid>
                                     </ScrollView>
                                     <Label Text="{Binding Date}" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Grid.Column="2" Grid.ColumnSpan="2" />
@@ -177,12 +184,12 @@
                         <RowDefinition Height="Auto"></RowDefinition>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <!--FT32-->
-                    <Grid Grid.Column="0" Padding="8" HorizontalOptions="Start" Grid.ColumnSpan="2">
+                    <Grid Grid.Column="0" Padding="8" HorizontalOptions="Start" >
                         <Grid.RowDefinitions>
                             <RowDefinition Height="35"></RowDefinition>
                             <RowDefinition Height="Auto"></RowDefinition>
@@ -191,9 +198,9 @@
                             <RowDefinition Height="Auto"></RowDefinition>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="115"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <Button x:Name="FT32_btn" Clicked="scanFT32"  Text="FT32" TextColor="White" FontSize="25" Padding="2" BackgroundColor="LightGray" Grid.Row="0" Grid.ColumnSpan="1" Opacity="0.5"/>
+                        <Button x:Name="FT32_btn" Clicked="scanFT32"  Text="FT32" TextColor="White" FontSize="20" Padding="2" BackgroundColor="LightGray" Grid.Row="0" Grid.ColumnSpan="1" Opacity="0.5"/>
                         <Label Text="Batch: " TextColor="LightGray" Grid.Row="1"  FontAttributes="Bold"/>
                         <Label x:Name="FT32_Batch" TextColor="LightGray" HorizontalOptions="End" Grid.Row="1"  />
                         <Label Text="Tank: " TextColor="LightGray" Grid.Row="2"  FontAttributes="Bold"/>
@@ -204,7 +211,7 @@
                     </Grid>
 
                     <!--Phosphate-->
-                    <Grid Grid.Column="1" Padding="8" HorizontalOptions="CenterAndExpand" Grid.ColumnSpan="2">
+                    <Grid Grid.Column="1" Padding="8" HorizontalOptions="Center" >
                         <Grid.RowDefinitions>
                             <RowDefinition Height="35"></RowDefinition>
                             <RowDefinition Height="Auto"></RowDefinition>
@@ -213,9 +220,9 @@
                             <RowDefinition Height="Auto"></RowDefinition>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="115"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <Button x:Name="Phosphate_btn" Clicked="scanPhosp" Text="Phosphate" TextColor="White" FontSize="25" Padding="2" BackgroundColor="LightGray" Grid.Row="0" Opacity="0.5"/>
+                        <Button x:Name="Phosphate_btn" Clicked="scanPhosp" Text="Phosphate" TextColor="White" FontSize="20" Padding="2" BackgroundColor="LightGray" Grid.Row="0" Opacity="0.5"/>
                         <Label Text="Batch: " TextColor="LightGray" Grid.Row="1"  FontAttributes="Bold"/>
                         <Label x:Name="Phosp_Batch" TextColor="LightGray" HorizontalOptions="End" Grid.Row="1"  />
                         <Label Text="Bag: " TextColor="LightGray" Grid.Row="2"  FontAttributes="Bold"/>
@@ -226,7 +233,7 @@
                     </Grid>
 
                     <!--Saline-14-->
-                    <Grid Grid.Column="2" Padding="8" HorizontalOptions="EndAndExpand" Grid.ColumnSpan="2">
+                    <Grid Grid.Column="2" Padding="8" HorizontalOptions="End" >
                         <Grid.RowDefinitions>
                             <RowDefinition Height="35"></RowDefinition>
                             <RowDefinition Height="Auto"></RowDefinition>
@@ -235,9 +242,9 @@
                             <RowDefinition Height="Auto"></RowDefinition>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="115"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <Button x:Name="Saline_btn" Clicked="scanSaline" Text="Saline-14" TextColor="White" FontSize="25" Padding="2" BackgroundColor="LightGray" Grid.Row="0" Opacity="0.5"/>
+                        <Button x:Name="Saline_btn" Clicked="scanSaline" Text="Saline-14" TextColor="White" FontSize="20" Padding="2" BackgroundColor="LightGray" Grid.Row="0" Opacity="0.5"/>
                         <Label Text="Batch: " TextColor="LightGray" Grid.Row="1"  FontAttributes="Bold"/>
                         <Label x:Name="Saline_Batch" TextColor="LightGray" HorizontalOptions="End" Grid.Row="1"  />
                         <Label Text="Bag: " TextColor="LightGray" Grid.Row="2"  FontAttributes="Bold"/>

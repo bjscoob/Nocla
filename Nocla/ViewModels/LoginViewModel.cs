@@ -26,13 +26,13 @@ namespace Nocla.ViewModels
         {
             return loginStatus;
         }
-
+        
        
             
         //Login View Model can also update the login status
         public static void updateStatus()
         {
-            loginStatus = true;
+            loginStatus = !loginStatus;
         }
 
     }

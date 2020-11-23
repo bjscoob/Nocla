@@ -9,11 +9,11 @@
              Shell.NavBarIsVisible="False"
              BackgroundColor="#003595">
     <Grid>
-        <Grid Padding="10">
+        <Grid Padding="10" RowSpacing="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="200"/>
                 <RowDefinition Height="200"/>
-                <RowDefinition Height="50"/>
+                <RowDefinition Height="70"/>
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
@@ -21,7 +21,7 @@
             <Image Source="nocla_logo.png" VerticalOptions="Center" Grid.Row="0" />
 
             <!--Login View -->
-            <StackLayout Orientation="Vertical"  Grid.Row="1">
+            <StackLayout Orientation="Vertical"  Grid.Row="1" >
                 <Label Text="Username" FontSize="20" HorizontalTextAlignment="Center" TextColor="LightGray"/>
                 <Entry x:Name="userEntry" FontSize="15" TextColor="White" HorizontalTextAlignment="Center"/>
                 <Label Text="Password" FontSize="20" HorizontalTextAlignment="Center" TextColor="LightGray"/>

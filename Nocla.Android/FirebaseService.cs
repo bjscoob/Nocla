@@ -16,6 +16,7 @@ using WindowsAzure.Messaging;
 using Nocla.Views;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using Nocla.ViewModels;
 
 namespace Nocla.Droid
 {
@@ -80,6 +81,7 @@ namespace Nocla.Droid
 
         void SendLocalNotification(string body)
         {
+            if(LoginViewModel.user == null) { return; }
             string[] bodydata = body.Split('|');
             var intent = new Intent(this, typeof(MainActivity));
             intent.AddFlags(ActivityFlags.ClearTop);
