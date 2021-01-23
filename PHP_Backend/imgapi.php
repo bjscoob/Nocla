@@ -1,6 +1,6 @@
 <?php 
 date_default_timezone_set("America/New_York");
-$con = mysqli_connect("localhost","jacksonb_api","admin","jacksonb_wrdp3");
+$con = mysqli_connect("localhost","###","###","###");
 //parameters send in via querystring
 if (!isset($_GET['id']) || !isset($_GET['username']) ) {
 die('{"status" : "Bad", "reason" : "Invalid Access"}');
