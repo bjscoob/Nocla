@@ -1,7 +1,7 @@
 <?php
 require "class.contact.php";
 date_default_timezone_set("America/New_York");
-$con = mysqli_connect("localhost","jacksonb_api","admin","jacksonb_wrdp3");
+$con = mysqli_connect("localhost","###","###","###");
 if(isset($_POST['getUsers'])){
     $sql = 'SELECT id,username,firstname,lastname,photo FROM users';
     $result = $con->query($sql);
