@@ -1,7 +1,7 @@
 <?php 
 require "class.user.php";
 date_default_timezone_set("America/New_York");
-$con = mysqli_connect("localhost","jacksonb_api","admin","jacksonb_wrdp3");
+$con = mysqli_connect("localhost","###","###","###");
 if(!$con){echo "Database connection failed";}
 $_SESSION['user'] = "No user found";
 function isExp($dateStr){
@@ -39,7 +39,6 @@ function checkAuthToken($token){
     }
 }
 function generateAuthToken($userID){
-    $con = mysqli_connect("localhost","jacksonb_api","admin","jacksonb_wrdp3");
     if(!$con){echo "Database connection failed";}
     //Create Auth Token
     $bytes = random_bytes(20);
@@ -51,7 +50,6 @@ function generateAuthToken($userID){
 }
 function sendResetEmail($email){
     $response = ["response" => "Database connection failed."];
-    $con = mysqli_connect("localhost","jacksonb_api","admin","jacksonb_wrdp3");
     if(!$con){echo "Database connection failed";}
     $sql = "SELECT * FROM users WHERE email ='".$email."'";
     $result = $con->query($sql);
@@ -87,7 +85,6 @@ function sendResetEmail($email){
     
 }
 function changePassword($id, $hash){
-    $con = mysqli_connect("localhost","jacksonb_api","admin","jacksonb_wrdp3");
     if(!$con){echo "Database connection failed";}
     $sql = "UPDATE users SET password ='".$hash."'WHERE id =".$id;
     $result = $con->query($sql);
