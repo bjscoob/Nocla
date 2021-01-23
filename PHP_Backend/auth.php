@@ -1,7 +1,7 @@
 <?php
      if(isset($_POST['name']) && isset($_POST['pswd'])){
         date_default_timezone_set("America/New_York");
-        $con = mysqli_connect("localhost","jacksonb_api","admin","jacksonb_wrdp3");
+        $con = mysqli_connect("localhost","###","###","###");
         if($con){
             $sql = "SELECT * FROM users WHERE username = '".$_POST['name']."'";
         $res = $con->query($sql) or die($con->error);
