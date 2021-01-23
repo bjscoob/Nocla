@@ -1,6 +1,6 @@
 <?php 
 date_default_timezone_set("America/New_York");
-$con = mysqli_connect("localhost","jacksonb_api","admin","jacksonb_wrdp3");
+$con = mysqli_connect("localhost","###","###","###");
 if($con){
 //Activities Retrieval
  if(isset($_POST['actGET'])){
@@ -27,7 +27,6 @@ if($con){
             $oneday->invert = 1;
             $date->add($oneday);
         }
-        //INSERT INTO MyGuests (firstname, lastname, email) VALUES ('John', 'Doe', 'john@example.com')"
         $sql = "INSERT INTO activities (pm_no,content, activity_time, author) VALUES ('".$_POST['pm_no']."','".$_POST['content']."','".$date->format("Y-m-d H:i:s")."','".$_POST['author']."')";
         error_log("INSERT ACTIVITY: ".$sql);
         if(!$result = $con->query($sql)){
