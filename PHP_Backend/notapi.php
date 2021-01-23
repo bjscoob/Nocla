@@ -6,8 +6,8 @@ if(!empty($_POST)){
 
     //init database and notification hub    
     date_default_timezone_set("America/New_York");
-    $con = mysqli_connect("localhost","jacksonb_api","admin","jacksonb_wrdp3");
-    $hub = new NotificationHub("Endpoint=sb://noclahub.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=lkTVul72HMyEzy5lETKbW8JVCo2Y4qgl/KExbaMlHXM=", "noclaNotifyHub");
+    $con = mysqli_connect("localhost","###","###","###");
+    $hub = new NotificationHub("Endpoint=sb://noclahub.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=###", "noclaNotifyHub");
     
     //construct message
     $content = $_POST['senderFL']."|".$_POST['content'];
